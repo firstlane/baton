@@ -152,12 +152,34 @@ func playTrack(cmd *cobra.Command, args []string) {
 	fmt.Printf("Playing '%s' by %s from album %s\n", res.Tracks.Items[0].Name, strings.Join(artistNames, ", "), res.Tracks.Items[0].Album.Name)
 }
 
+func playMultiple(cmd *cobra.Command, args []string) {
+	if len(args) > 0 {
+		playerOptions.URIs = args
+		err := api.StartPlayback(&playerOptions)
+
+		if err != nil {
+			fmt.Printf("Couldn't start playback. Is that URI proper? Is Spotify active on a device? Have you authenticated with the 'auth' command?\n")
+		} else {
+			fmt.Printf("Playing uri: %s\n", args[0])
+		}
+	} else {
+		err := api.StartPlayback(&playerOptions)
+
+		if err != nil {
+			fmt.Printf("Couldn't start playback. Is Spotify already playing? Is Spotify active on a device? Have you authenticated with the 'auth' command?\n")
+		} else {
+			fmt.Printf("Resuming playback\n")
+		}
+	}
+}
+
 func init() {
 	rootCmd.AddCommand(playCmd)
 	playCmd.AddCommand(playArtistCmd)
 	playCmd.AddCommand(playAlbumCmd)
 	playCmd.AddCommand(playPlaylistCmd)
 	playCmd.AddCommand(playTrackCmd)
+	playCmd.AddCommand(playMultipleCmd)
 
 	playCmd.PersistentFlags().StringVarP(&playerOptions.DeviceID, "device", "d", "", "id of the device this command is targeting")
 }
@@ -200,4 +222,12 @@ var playTrackCmd = &cobra.Command{
 	Long:  `Play top result for specified track`,
 	Args:  cobra.MinimumNArgs(1),
 	Run:   playTrack,
+}
+
+var playMultipleCmd = &cobra.Command{
+	Use:   `multiple "track uris"`,
+	Short: "Play each item in the list of uris",
+	Long:  `Play each item in the list of uris`,
+	Args:  cobra.MaximumNArgs(10),
+	Run:   playMultiple,
 }
