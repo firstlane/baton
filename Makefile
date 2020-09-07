@@ -22,10 +22,10 @@ os = $(word 1, $@)
 .PHONY: $(PLATFORMS)
 ifeq ($(OS),Windows_NT)
 $(PLATFORMS): # If host is windows
-	set GOOS=$(os)&& set GOARCH=amd64&& $(GOBUILD) -o $(BINARY_OUTPUT)-$(VERSION)-$(os)-amd64$(if $(filter $(os),windows),.exe,) main.go
+	set GOOS=$(os)&& set GOARCH=amd64&& $(GOBUILD) -o $(BINARY_OUTPUT)$(if $(filter $(os),windows),.exe,) main.go
 else
 $(PLATFORMS): # else it's Linux/MacOS
-	GOOS=$(os) GOARCH=amd64 $(GOBUILD) -o $(BINARY_OUTPUT)-$(VERSION)-$(os)-amd64$(if $(filter $(os),windows),.exe,) main.go
+	GOOS=$(os) GOARCH=amd64 $(GOBUILD) -o $(BINARY_OUTPUT)$(if $(filter $(os),windows),.exe,) main.go
 endif
 
 .PHONY: build
