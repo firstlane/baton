@@ -3,13 +3,13 @@
 > Baton is a CLI tool to manage Spotify playback and includes a CUI for searches
 
 <!-- [![asciicast](https://asciinema.org/a/RgR4iT9wz2J3bjCx0p7Wj9Rnn.png)](https://asciinema.org/a/RgR4iT9wz2J3bjCx0p7Wj9Rnn) -->
-![](https://raw.githubusercontent.com/joshuathompson/baton/master/example.gif)
+![](https://raw.githubusercontent.com/firstlane/baton/master/example.gif)
 
 ## NOTE: You can't change songs, volume, etc without Spotify premium due to a limit on their web API
 
 ## Install
 
-Fetch the release for your platform [from the following page](https://github.com/joshuathompson/baton/releases). Use `chmod` to set permissions on your binary and move it to `/usr/local/bin` or equivalent.
+Fetch the release for your platform [from the following page](https://github.com/firstlane/baton/releases). Use `chmod` to set permissions on your binary and move it to `/usr/local/bin` or equivalent.
 
 ## Setup
 

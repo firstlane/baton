@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/joshuathompson/baton/api"
+	"github.com/firstlane/baton/api"
 	"github.com/spf13/cobra"
 )
 

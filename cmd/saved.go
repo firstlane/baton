@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/joshuathompson/baton/api"
-	"github.com/joshuathompson/baton/ui"
+	"github.com/firstlane/baton/api"
+	"github.com/firstlane/baton/ui"
 	"github.com/spf13/cobra"
 )
 

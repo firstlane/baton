@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/joshuathompson/baton/cmd"
+	"github.com/firstlane/baton/cmd"
 )
 
 func main() {

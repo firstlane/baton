@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/joshuathompson/baton/api"
-	"github.com/joshuathompson/baton/utils"
+	"github.com/firstlane/baton/api"
+	"github.com/firstlane/baton/utils"
 	"github.com/jroimartin/gocui"
 )
 
