@@ -57,6 +57,9 @@ This process will generate a long-lasting refresh token and ideally will never h
 
 ## Building
 
+Note: baton does not currently use modules, so set module-aware mode to auto with `go env -w GO111MODULE=auto`.
+More info can be found here: https://blog.golang.org/go116-module-changes
+
 To build the program, simply run `make` or `make build`, this will build for all 3 platforms (note: to do this on windows you'll need [Make for windows](http://gnuwin32.sourceforge.net/packages/make.htm)). To build for one specific platform run `make <platform>` where platform is either "windows", "darwin" (for MacOS) or "linux". You can also run from source by running `make run`.
 
 ## License
