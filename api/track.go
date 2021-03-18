@@ -11,26 +11,40 @@ type TrackLink struct {
 	URI          string            `json:"uri"`
 }
 
+// The TrackPlaylistData struct contains the information on a playlist to which a track belongs
+type TrackPlaylistData struct {
+	AddedAt *time.Time `json:"added_at"`
+	AddedBy *User      `json:"added_by"`
+	Href    string     `json:"href"`
+	ID      string     `json:"id"`
+	IsLocal bool       `json:"is_local"`
+	Name    string     `json:"name"`
+	Owner   *User      `json:"owner"`
+	URI     string     `json:"uri"`
+}
+
 // The FullTrack struct describes a "Full" Track object as defined by the Spotify Web API
 type FullTrack struct {
-	Album            *SimpleAlbum      `json:"album"`
-	Artists          []SimpleArtist    `json:"artists"`
-	AvailableMarkets []string          `json:"available_markets"`
-	DiscNumber       int               `json:"disc_number"`
-	DurationMs       int               `json:"duration_ms"`
-	Explicit         bool              `json:"explicit"`
-	ExternalIDs      map[string]string `json:"external_ids"`
-	ExternalUrls     map[string]string `json:"external_urls"`
-	Href             string            `json:"href"`
-	ID               string            `json:"id"`
-	IsPlayable       bool              `json:"is_playable"`
-	LinkedFrom       *TrackLink        `json:"linked_from"`
-	Name             string            `json:"name"`
-	Popularity       int               `json:"popularity"`
-	PreviewURL       string            `json:"preview_url"`
-	TrackNumber      int               `json:"track_number"`
-	Type             string            `json:"type"`
-	URI              string            `json:"uri"`
+	Album            *SimpleAlbum        `json:"album"`
+	Artists          []SimpleArtist      `json:"artists"`
+	AvailableMarkets []string            `json:"available_markets"`
+	DiscNumber       int                 `json:"disc_number"`
+	DurationMs       int                 `json:"duration_ms"`
+	Explicit         bool                `json:"explicit"`
+	ExternalIDs      map[string]string   `json:"external_ids"`
+	ExternalUrls     map[string]string   `json:"external_urls"`
+	Href             string              `json:"href"`
+	ID               string              `json:"id"`
+	IsPlayable       bool                `json:"is_playable"`
+	LinkedFrom       *TrackLink          `json:"linked_from"`
+	Name             string              `json:"name"`
+	Playlists        []TrackPlaylistData `json:"playlists"`
+	Popularity       int                 `json:"popularity"`
+	PreviewURL       string              `json:"preview_url"`
+	TrackNumber      int                 `json:"track_number"`
+	Type             string              `json:"type"`
+	Updated          *time.Time          `json:"updated"`
+	URI              string              `json:"uri"`
 }
 
 // The SimpleTrack struct describes a "Simple" Track object as defined by the Spotify Web API

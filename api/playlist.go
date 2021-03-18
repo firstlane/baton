@@ -1,7 +1,10 @@
 package api
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/google/go-querystring/query"
 )
@@ -51,6 +54,37 @@ func GetTracksForPlaylist(userID, playlistID string) (pt PlaylistTracksPaged, er
 	return pt, err
 }
 
+// GetAllTracksForPlaylist returns a list of PlaylistTrack objects in a paging object for the given user and playlist
+func GetAllTracksForPlaylist(userID, playlistID string) (pt PlaylistTracksPaged, err error) {
+	playlistTracks, err := GetTracksForPlaylist(userID, playlistID)
+
+	if err != nil {
+		fmt.Println("Failed to get all tracks for playlist ", playlistID)
+		return
+	}
+
+	for {
+		if err != nil || playlistTracks.Offset >= playlistTracks.Total-1 {
+			break
+		}
+
+		nextTracks, err := GetNextTracksForPlaylist(playlistTracks.Next)
+
+		if err != nil {
+			break
+		}
+
+		playlistTracks.Href = nextTracks.Href
+		playlistTracks.Offset = nextTracks.Offset
+		playlistTracks.Next = nextTracks.Next
+		playlistTracks.Previous = nextTracks.Previous
+		playlistTracks.Items = append(playlistTracks.Items, nextTracks.Items...)
+	}
+
+	pt = playlistTracks
+	return pt, err
+}
+
 // GetNextTracksForPlaylist takes in the Next field from the paging objects returned from GetTracksForPlaylist and allows you to move forward through the tracks
 func GetNextTracksForPlaylist(url string) (pt PlaylistTracksPaged, err error) {
 	t := getAccessToken()
@@ -95,4 +129,51 @@ func GetNextMyPlaylists(url string) (pt *SimplePlaylistsPaged, err error) {
 	err = makeRequest(r, &pt)
 
 	return pt, err
+}
+
+func loadNextRecords(playlists *SimplePlaylistsPaged) error {
+	if playlists.Next != "" {
+		if strings.Contains(playlists.Next, "api.spotify.com/v1/search") {
+			return errors.New("I dunno, something happened")
+		}
+
+		res, err := GetNextMyPlaylists(playlists.Next)
+
+		if err != nil {
+			return err
+		}
+
+		nextPlaylists := res
+
+		playlists.Href = nextPlaylists.Href
+		playlists.Offset = nextPlaylists.Offset
+		playlists.Next = nextPlaylists.Next
+		playlists.Previous = nextPlaylists.Previous
+		playlists.Items = append(playlists.Items, nextPlaylists.Items...)
+	}
+
+	return nil
+}
+
+// GetAllMyPlaylists takes in the Next field from the paging objects returned from GetTracksForPlaylist and allows you to move forward through the tracks
+func GetAllMyPlaylists() (playlists *SimplePlaylistsPaged, err error) {
+	playlists, err = GetMyPlaylists()
+
+	const limit = 10
+	playlistCounter := limit // This is the default limit set in GetMyPlaylists when calling the Web API
+
+	if err == nil && playlists.Total > playlistCounter {
+		for {
+			err = loadNextRecords(playlists)
+			playlistCounter += limit
+			if err != nil || playlistCounter >= playlists.Total {
+				break
+			}
+		}
+	} else {
+		fmt.Println("Did not enter for loop in GetAllMyPlaylists")
+		fmt.Println("err = ", err)
+	}
+
+	return playlists, err
 }

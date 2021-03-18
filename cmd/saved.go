@@ -53,8 +53,8 @@ func init() {
 
 var savedCmd = &cobra.Command{
 	Use:   "saved",
-	Short: "Browse tracks or albums saved you've saved",
-	Long:  `Browse tracks or albums saved you've saved`,
+	Short: "Browse tracks or albums you've saved",
+	Long:  `Browse tracks or albums you've saved`,
 }
 
 var savedTracksCmd = &cobra.Command{
