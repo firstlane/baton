@@ -3,16 +3,17 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
-	"os"
 
 	"github.com/firstlane/baton/api"
+	"github.com/firstlane/baton/ui"
 	"github.com/spf13/cobra"
 )
 
 func init() {
 	rootCmd.AddCommand(getCmd)
-	//getCmd.AddCommand(getPlaylistsCmd)
+	getCmd.AddCommand(getPlaylistsCmd)
 	//getPlaylistsCmd.AddCommand(updatePlaylistsCmd)
 }
 
@@ -37,7 +38,9 @@ func getLibrary(cmd *cobra.Command, args []string) {
 	var allTracks = make(map[string]api.FullTrack)
 
 	// Get each song from playlists
+	fmt.Println("Getting each song from playlists")
 	for _, playlist := range playlists.Items {
+		fmt.Println("playlist = ", playlist.Name)
 		playlistTracks, err := api.GetAllTracksForPlaylist(playlist.Owner.ID, playlist.ID)
 
 		if err != nil {
@@ -75,31 +78,58 @@ func getLibrary(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	// Load old json data if it exists and update accordingly
+	// TODO: Load old json data if it exists and update accordingly
+
+	jsonData, err := json.MarshalIndent(allTracks, "", "    ")
+	if err != nil {
+		fmt.Println("err", err)
+	}
+
+	_ = ioutil.WriteFile("test.json", jsonData, 0644)
 }
 
 func getPlayLists(cmd *cobra.Command, args []string) {
-	playlists, err := api.GetAllMyPlaylists()
+
+	res, err := api.GetAllMyPlaylists()
 
 	if err != nil {
 
 		fmt.Printf("Couldn't get your playlists from spotify. Have you authenticated with the 'auth' command?\n")
-		fmt.Println("err", err)
+		fmt.Println("err", res, err)
 		return
 	}
 
-	jsonData, err := json.MarshalIndent(playlists, "", "\t")
+	at := ui.NewPlaylistSelectionTable(res)
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = os.WriteFile("test.json", jsonData, 0644)
+	err = ui.Run(at)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 }
+
+// func getPlayLists(cmd *cobra.Command, args []string) {
+// 	playlists, err := api.GetAllMyPlaylists()
+
+// 	if err != nil {
+
+// 		fmt.Printf("Couldn't get your playlists from spotify. Have you authenticated with the 'auth' command?\n")
+// 		fmt.Println("err", err)
+// 		return
+// 	}
+
+// 	jsonData, err := json.MarshalIndent(playlists, "", "\t")
+
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+
+// 	err = os.WriteFile("test.json", jsonData, 0644)
+
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// }
 
 func updatePlayLists(cmd *cobra.Command, args []string) {
 
