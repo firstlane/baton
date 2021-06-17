@@ -106,6 +106,12 @@ func getPlayLists(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	for index, selection := range at.Selections {
+		if selection {
+			fmt.Println(at.Playlists.Items[index].Name, "is selected")
+		}
+	}
 }
 
 // func getPlayLists(cmd *cobra.Command, args []string) {

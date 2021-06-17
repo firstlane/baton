@@ -12,15 +12,15 @@ import (
 
 // PlaylistSelectionTable implements the Table interface for "Simple" Playlist objects as defined by the Spotify Web API
 type PlaylistSelectionTable struct {
-	playlists  *api.SimplePlaylistsPaged
-	selections []bool
+	Playlists  *api.SimplePlaylistsPaged
+	Selections []bool
 }
 
 // NewPlaylistSelectionTable creates a new instance of PlaylistSelectionTable
 func NewPlaylistSelectionTable(playlistsPaged *api.SimplePlaylistsPaged) *PlaylistSelectionTable {
 	return &PlaylistSelectionTable{
-		playlists:  playlistsPaged,
-		selections: make([]bool, len(playlistsPaged.Items)),
+		Playlists:  playlistsPaged,
+		Selections: make([]bool, len(playlistsPaged.Items)),
 	}
 }
 
@@ -49,10 +49,10 @@ func (p *PlaylistSelectionTable) renderHeader(v *gocui.View, maxX int) {
 func (p *PlaylistSelectionTable) render(v *gocui.View, maxX int) {
 	columnWidths := p.getColumnWidths(maxX)
 
-	for index, playlist := range p.playlists.Items {
+	for index, playlist := range p.Playlists.Items {
 		selectedText := "False"
 
-		if p.selections[index] {
+		if p.Selections[index] {
 			selectedText = "True"
 		}
 
@@ -66,17 +66,17 @@ func (p *PlaylistSelectionTable) render(v *gocui.View, maxX int) {
 }
 
 func (p *PlaylistSelectionTable) renderFooter(v *gocui.View, maxX int) {
-	fmt.Fprintf(v, "\u001b[1m%s\u001b[0m\n", utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d playlists", len(p.playlists.Items), p.playlists.Total), maxX, 2))
+	fmt.Fprintf(v, "\u001b[1m%s\u001b[0m\n", utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d playlists", len(p.Playlists.Items), p.Playlists.Total), maxX, 2))
 }
 
 func (p *PlaylistSelectionTable) getTableLength() int {
-	return len(p.playlists.Items)
+	return len(p.Playlists.Items)
 }
 
 func (p *PlaylistSelectionTable) loadNextRecords() error {
-	if p.playlists.Next != "" {
-		if strings.Contains(p.playlists.Next, "api.spotify.com/v1/search") {
-			res, err := api.GetNextSearchResults(p.playlists.Next)
+	if p.Playlists.Next != "" {
+		if strings.Contains(p.Playlists.Next, "api.spotify.com/v1/search") {
+			res, err := api.GetNextSearchResults(p.Playlists.Next)
 
 			if err != nil {
 				return err
@@ -84,13 +84,13 @@ func (p *PlaylistSelectionTable) loadNextRecords() error {
 
 			nextPlaylists := res.Playlists
 
-			p.playlists.Href = nextPlaylists.Href
-			p.playlists.Offset = nextPlaylists.Offset
-			p.playlists.Next = nextPlaylists.Next
-			p.playlists.Previous = nextPlaylists.Previous
-			p.playlists.Items = append(p.playlists.Items, nextPlaylists.Items...)
+			p.Playlists.Href = nextPlaylists.Href
+			p.Playlists.Offset = nextPlaylists.Offset
+			p.Playlists.Next = nextPlaylists.Next
+			p.Playlists.Previous = nextPlaylists.Previous
+			p.Playlists.Items = append(p.Playlists.Items, nextPlaylists.Items...)
 		} else {
-			res, err := api.GetNextMyPlaylists(p.playlists.Next)
+			res, err := api.GetNextMyPlaylists(p.Playlists.Next)
 
 			if err != nil {
 				return err
@@ -98,11 +98,11 @@ func (p *PlaylistSelectionTable) loadNextRecords() error {
 
 			nextPlaylists := res
 
-			p.playlists.Href = nextPlaylists.Href
-			p.playlists.Offset = nextPlaylists.Offset
-			p.playlists.Next = nextPlaylists.Next
-			p.playlists.Previous = nextPlaylists.Previous
-			p.playlists.Items = append(p.playlists.Items, nextPlaylists.Items...)
+			p.Playlists.Href = nextPlaylists.Href
+			p.Playlists.Offset = nextPlaylists.Offset
+			p.Playlists.Next = nextPlaylists.Next
+			p.Playlists.Previous = nextPlaylists.Previous
+			p.Playlists.Items = append(p.Playlists.Items, nextPlaylists.Items...)
 		}
 
 	}
@@ -111,7 +111,7 @@ func (p *PlaylistSelectionTable) loadNextRecords() error {
 }
 
 func (p *PlaylistSelectionTable) playSelected(selectedIndex int) (string, error) {
-	playlist := p.playlists.Items[selectedIndex]
+	playlist := p.Playlists.Items[selectedIndex]
 	playerOptions := api.PlayerOptions{
 		ContextURI: playlist.URI,
 	}
@@ -122,7 +122,7 @@ func (p *PlaylistSelectionTable) playSelected(selectedIndex int) (string, error)
 }
 
 func (p *PlaylistSelectionTable) newTableFromSelection(selectedIndex int) (Table, error) {
-	playlist := p.playlists.Items[selectedIndex]
+	playlist := p.Playlists.Items[selectedIndex]
 	tracksPaged, err := api.GetTracksForPlaylist(playlist.Owner.ID, playlist.ID)
 
 	if err != nil {
@@ -133,12 +133,12 @@ func (p *PlaylistSelectionTable) newTableFromSelection(selectedIndex int) (Table
 }
 
 func (p *PlaylistSelectionTable) handleSaveKey(selectedIndex int) error {
-	if p.selections[selectedIndex] {
+	if p.Selections[selectedIndex] {
 		// Toggle off
-		p.selections[selectedIndex] = false
+		p.Selections[selectedIndex] = false
 	} else {
 		// Toggle on
-		p.selections[selectedIndex] = true
+		p.Selections[selectedIndex] = true
 	}
 
 	// Save current selections to file
