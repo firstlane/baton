@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/firstlane/baton/utils"
 	"github.com/google/go-querystring/query"
 )
 
@@ -157,6 +158,10 @@ func loadNextRecords(playlists *SimplePlaylistsPaged) error {
 
 // GetAllMyPlaylists takes in the Next field from the paging objects returned from GetTracksForPlaylist and allows you to move forward through the tracks
 func GetAllMyPlaylists() (playlists *SimplePlaylistsPaged, err error) {
+	quit := make(chan bool)
+
+	go utils.StartProgressSpinner(quit)
+
 	playlists, err = GetMyPlaylists()
 
 	const limit = 10
@@ -174,6 +179,8 @@ func GetAllMyPlaylists() (playlists *SimplePlaylistsPaged, err error) {
 		fmt.Println("Did not enter for loop in GetAllMyPlaylists")
 		fmt.Println("err = ", err)
 	}
+
+	quit <- true
 
 	return playlists, err
 }

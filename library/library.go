@@ -1,4 +1,4 @@
-package cmd
+package library
 
 import (
 	"encoding/json"
@@ -10,6 +10,21 @@ import (
 	"github.com/firstlane/baton/ui"
 	"github.com/spf13/cobra"
 )
+
+/*
+ * TODO: Need functions for the following:
+ *	- Loading the json library file
+ *	- Writing to the json library file
+ *	- Accessors for info from the json data
+ *	- Get all songs that are not recorded
+ *
+ * TODO: Need following functionality:
+ *	- Do not remove song from playlist if it is no longer in the Spotify copy of the playlist.
+ *	- Add extra fields for:
+ *		* Recorded?
+ *		* Recording date
+ *		* Recording quality
+ */
 
 func init() {
 	rootCmd.AddCommand(getCmd)

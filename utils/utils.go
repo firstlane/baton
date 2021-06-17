@@ -3,7 +3,10 @@ package utils
 import (
 	"strconv"
 	"strings"
+	"time"
 	"unicode/utf8"
+
+	"github.com/briandowns/spinner"
 )
 
 // StringInSlice determines whether a given string is within a slice of strings
@@ -47,4 +50,20 @@ func LeftPaddedString(value string, maxValueLength, padAmount int) string {
 	}
 
 	return value
+}
+
+// StartProgressSpinner creates a new progress spinner icon. It should be run as a goroutine, and accepts a quit flag.
+func StartProgressSpinner(quit chan bool) {
+	progress := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
+	progress.UpdateSpeed(100 * time.Millisecond)
+
+	progress.Start()
+	for {
+		shouldQuit := <-quit
+		if shouldQuit == true {
+			break
+		}
+		time.Sleep(time.Millisecond)
+	}
+	progress.Stop()
 }

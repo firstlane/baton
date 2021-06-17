@@ -35,3 +35,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/jroimartin/gocui"
+
+[[constraint]]
+  name = "github.com/giorgisio/goav"
+  branch = "master"
